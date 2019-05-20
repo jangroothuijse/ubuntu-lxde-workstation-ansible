@@ -1,0 +1,53 @@
+---
+- name: workstation
+  hosts: all
+  tasks:
+  - name: remove packages
+    apt:
+      pkg:
+        - modemmanager
+        - light-locker
+        - abiword
+        - gnumeric
+        - xpad
+        - sylpheed
+      state: absent
+    become: true
+    become_method: sudo
+  - name: add packages, for libre office, thunderbird and some theming
+    apt:
+      pkg:
+        - python-psutil
+        - arc-theme
+        - chromium-browser
+        - libreoffice-gtk3
+        - libreoffice-writer
+        - libreoffice-calc
+        - libreoffice-draw
+        - libreoffice-impress
+        - thunderbird
+        - eom
+        - pluma
+        - btrbk
+      state: present
+    become: true
+    become_method: sudo
+  - name: Set GTK theme and default applications
+    copy:
+      src: files/.config/lxsession/desktop.conf
+      dest: ~/.config/lxsession/desktop.conf
+  - name: Set openbox theme and window tiling
+    copy:
+      src: files/.config/openbox/lubuntu-rc.xml
+      dest: ~/.config/openbox/lubuntu-rc.xml
+  - name: Replace Pictures, if .pictures does not exist
+    shell: if [[ ! -f .pictures ]]; then if rm -r Pictures; then if btrfs subvolume create Pictures; then touch .pictures; fi fi fi
+  - name: Replace Documents, if .pictures does not exist
+    shell: if [[ ! -f .documents ]]; then if rm -r Documents; then if btrfs subvolume create Documents; then touch .documents; fi fi fi
+  - name: Replace Desktop, if .desktop does not exist
+    shell: if [[ ! -f .desktop ]]; then if rm -r Desktop; then if btrfs subvolume create Desktop; then touch .desktop; fi fi fi
+  - name: Config backup
+    copy:
+      src: files/btrbk.config
+      dest: ~/btrbk.config
+
