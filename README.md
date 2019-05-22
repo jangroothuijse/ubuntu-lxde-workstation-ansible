@@ -4,7 +4,6 @@
 - Ubuntu mini, with Lubuntu Desktop, Lubuntu Desktop (GTK Part) and OpenSSH-server installed
 - /home on a btrfs
 - /backup on a btrfs (preferrably a different disk)
-- a swap parition
 
 ## Goals
 - Low maintenance
@@ -24,6 +23,7 @@ This playbook is opiniated on what a desktop should have by default:
 - No bluetooth (can be installed if required)
 - No modem-manager (again, can be installed if required)
 - Hibernate works well enough
-Ohter opinions include:
+Other opinions include:
 - What is in git, has a backup elsewhere
 - Snapshot and backups should be visible to the user, not hidden
+- System files need not to be backed up, only (specific) user files
