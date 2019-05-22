@@ -11,13 +11,13 @@
         - gnumeric
         - xpad
         - sylpheed
+        - gpicview
       state: absent
     become: true
     become_method: sudo
-  - name: add packages, for libre office, thunderbird and some theming
+  - name: add packages for office, email, themes, addblocker and printing
     apt:
       pkg:
-        - python-psutil
         - arc-theme
         - chromium-browser
         - libreoffice-gtk3
@@ -29,6 +29,11 @@
         - eom
         - pluma
         - btrbk
+        - xul-ext-lightning
+        - vlc
+        - hpijs-ppds
+        - hp-ppd
+        - printer-driver-hpijs
       state: present
     become: true
     become_method: sudo
@@ -40,14 +45,23 @@
     copy:
       src: files/.config/openbox/lubuntu-rc.xml
       dest: ~/.config/openbox/lubuntu-rc.xml
-  - name: Replace Pictures, if .pictures does not exist
-    shell: if [[ ! -f .pictures ]]; then if rm -r Pictures; then if btrfs subvolume create Pictures; then touch .pictures; fi fi fi
-  - name: Replace Documents, if .pictures does not exist
-    shell: if [[ ! -f .documents ]]; then if rm -r Documents; then if btrfs subvolume create Documents; then touch .documents; fi fi fi
-  - name: Replace Desktop, if .desktop does not exist
-    shell: if [[ ! -f .desktop ]]; then if rm -r Desktop; then if btrfs subvolume create Desktop; then touch .desktop; fi fi fi
+  - name: Replace Pictures with subvolume, if .pictures does not exist
+    shell: if test -f .pictures; then echo ".pictures exists"; else if rm -r Pictures; then if btrfs subvolume create Pictures; then touch .pictures; fi fi fi
+  - name: Replace Documents with subvolume, if .pictures does not exist
+    shell: if test -f .documents; then echo ".documents exists"; else if rm -r Documents; then if btrfs subvolume create Documents; then touch .documents; fi fi fi
+  - name: Replace Desktop with subvolume, if .desktop does not exist
+    shell: if test -f .desktop; then echo ".desktop exists"; else if rm -r Desktop; then if btrfs subvolume create Desktop; then touch .desktop; fi fi fi
   - name: Config backup
     copy:
       src: files/btrbk.config
       dest: ~/btrbk.config
+  - name: Mozilla extension manager
+    become: true
+    copy:
+      src: files/mozilla-extension-manager
+      dest: /usr/bin/
+      mode: 0755
+  - name: Install LookOut, to open winmail.dat attachments in thunderbird
+    become: true
+    shell: /usr/bin/mozilla-extension-manager --install --system https://addons.thunderbird.net/thunderbird/downloads/latest/lookout-fix-version/addon-711780-latest.xpi
 
