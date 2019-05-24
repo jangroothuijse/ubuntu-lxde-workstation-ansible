@@ -40,17 +40,20 @@
   - name: Set GTK theme and default applications
     copy:
       src: files/.config/lxsession/desktop.conf
-      dest: ~/.config/lxsession/desktop.conf
+      dest: .config/lxsession/desktop.conf
   - name: Set openbox theme and window tiling
     copy:
       src: files/.config/openbox/lubuntu-rc.xml
-      dest: ~/.config/openbox/lubuntu-rc.xml
+      dest: .config/openbox/lubuntu-rc.xml
   - name: Replace Pictures with subvolume, if .pictures does not exist
-    shell: if test -f .pictures; then echo ".pictures exists"; else if rm -r Pictures; then if btrfs subvolume create Pictures; then touch .pictures; fi fi fi
+    shell: if rm -r Pictures; then if btrfs subvolume create Pictures; then touch .pictures; fi fi
+    creates: .pictures
   - name: Replace Documents with subvolume, if .pictures does not exist
-    shell: if test -f .documents; then echo ".documents exists"; else if rm -r Documents; then if btrfs subvolume create Documents; then touch .documents; fi fi fi
+    shell: if rm -r Documents; then if btrfs subvolume create Documents; then touch .documents; fi fi
+    creates: ,documents
   - name: Replace Desktop with subvolume, if .desktop does not exist
-    shell: if test -f .desktop; then echo ".desktop exists"; else if rm -r Desktop; then if btrfs subvolume create Desktop; then touch .desktop; fi fi fi
+    shell: if rm -r Desktop; then if btrfs subvolume create Desktop; then touch .desktop; fi fi
+    creates: .desktop
   - name: Config backup
     copy:
       src: files/btrbk.config
