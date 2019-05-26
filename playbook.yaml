@@ -12,6 +12,8 @@
         - xpad
         - sylpheed
         - gpicview
+        - snapd
+        - bluez
       state: absent
     become: true
     become_method: sudo
@@ -41,6 +43,10 @@
     copy:
       src: files/.config/lxsession/desktop.conf
       dest: .config/lxsession/desktop.conf
+  - name: Set GTK theme and default applications again
+    copy:
+      src: files/.config/lxsession/desktop.conf
+      dest: .config/lxsession/Lubuntu/desktop.conf
   - name: Set openbox theme and window tiling
     copy:
       src: files/.config/openbox/lubuntu-rc.xml
@@ -50,7 +56,7 @@
     creates: .pictures
   - name: Replace Documents with subvolume, if .pictures does not exist
     shell: if rm -r Documents; then if btrfs subvolume create Documents; then touch .documents; fi fi
-    creates: ,documents
+    creates: .documents
   - name: Replace Desktop with subvolume, if .desktop does not exist
     shell: if rm -r Desktop; then if btrfs subvolume create Desktop; then touch .desktop; fi fi
     creates: .desktop
@@ -67,4 +73,8 @@
   - name: Install LookOut, to open winmail.dat attachments in thunderbird
     become: true
     shell: /usr/bin/mozilla-extension-manager --install --system https://addons.thunderbird.net/thunderbird/downloads/latest/lookout-fix-version/addon-711780-latest.xpi
+  - name: Fix grub timeout and splash (to supress plymouth)
+    shell: if sed -i 's/GRUB_TIMEOUT=10/GRUB_TIMEOUT=1/' /etc/default/grub; then if sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="splash quiet"/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub; then if update-grub; then touch .grub_fixed; fi fi fi
+    creates: .grub_fixed
+    become: true
 

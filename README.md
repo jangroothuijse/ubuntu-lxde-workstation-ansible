@@ -2,8 +2,10 @@
 
 ## Preconditions
 - Ubuntu mini, with Lubuntu Desktop, Lubuntu Desktop (GTK Part) and OpenSSH-server installed
+- Installed python
 - /home on a btrfs
 - /backup on a btrfs (preferrably a different disk)
+- 
 
 ## Goals
 - Low maintenance
